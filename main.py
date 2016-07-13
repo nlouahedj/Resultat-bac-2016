@@ -19,13 +19,13 @@ p_birth_place = re.compile('.*?مكان الميلاد : (.*)?تاريخ.*', re.
 p_field = re.compile('.*?الشعبة : (.*)?اللقب.*', re.DOTALL)
 p_grade = re.compile('.*?المعدل : (.*)?الملاحظة.*', re.DOTALL)
 
-mat = 31001000
+mat = 31002000
 
 def run(thread_name):
     global mat
     db = sqlite3.connect('data.db')
     db.execute("PRAGMA busy_timeout = 300000")
-    while mat <= 31002000:
+    while mat <= 31003000:
         m = mat
         mat += 1
         data = {
