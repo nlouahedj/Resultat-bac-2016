@@ -23,7 +23,7 @@ def run(thread_name):
     global done
     while not done:
         data = {
-            'matriculebac': str(random.randint(00000000, 49999999)),
+            'matriculebac': str(random.randint(30000000, 39999999)),
             'dobac' : "استظهار+النتيجة"
         }
         try:
