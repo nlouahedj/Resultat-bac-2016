@@ -27,7 +27,7 @@ def run(thread_name):
     while not done:
         i += 1
         data = {
-            'matriculebac': str(random.randint(30000000, 39999999)),
+            'matriculebac': str(random.randint(00000000, 49999999)),
             'dobac' : "استظهار+النتيجة"
         }
         try:
