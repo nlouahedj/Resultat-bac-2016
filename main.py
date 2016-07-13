@@ -10,7 +10,7 @@ import sqlite3
 
 url = 'http://bac.onec.dz/index.php'
 
-db = sqlite3.connect('data.db')
+
 
 p_fname = re.compile('.*?الاسم : (.*)?مكان.*', re.DOTALL)
 p_lname = re.compile('.*?اللقب : (.*)?الاسم.*', re.DOTALL)
@@ -19,11 +19,17 @@ p_birth_place = re.compile('.*?مكان الميلاد : (.*)?تاريخ.*', re.
 p_field = re.compile('.*?الشعبة : (.*)?اللقب.*', re.DOTALL)
 p_grade = re.compile('.*?المعدل : (.*)?الملاحظة.*', re.DOTALL)
 
+mat = 31001000
 
 def run(thread_name):
-    while True:
+    global mat
+    db = sqlite3.connect('data.db')
+    db.execute("PRAGMA busy_timeout = 300000")
+    while mat <= 31002000:
+        m = mat
+        mat += 1
         data = {
-            'matriculebac': str(random.randint(31000000, 39999999)),
+            'matriculebac': str(mat),
             'dobac' : "استظهار+النتيجة"
         }
         try:
@@ -55,8 +61,13 @@ def run(thread_name):
                                                        m_birth_place.group(1).replace('\\n', ''),
                                                        m_field.group(1).replace('\\n', ''),
                                                        m_grade.group(1).replace('\\n', '')))
-            except Exception:
+            except sqlite3.OperationalError:
+                print('db locked waiting 5s')
+                time.sleep(5)
+            except Exception as e:
                 pass
+                # print(str(e))
+                # print('{} exists'.format(data['matriculebac']))
 
 
 if __name__ == '__main__':
