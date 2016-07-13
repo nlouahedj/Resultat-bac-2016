@@ -9,6 +9,8 @@ import re
 
 url = 'http://bac.onec.dz/index.php'
 
+tabo = []
+
 p_fname = re.compile('.*?الاسم : (.*)?مكان.*', re.DOTALL)
 p_lname = re.compile('.*?اللقب : (.*)?الاسم.*', re.DOTALL)
 p_birth_date = re.compile('.*?تاريخ الميلاد : (\d\d-\d\d-\d\d\d\d).*?(ألف|راسب).*', re.DOTALL)
@@ -21,11 +23,15 @@ done = False
 
 def run(thread_name):
     global done
-    while not done:
+    global tabo
+    while len(tabo) < 9999999:
         data = {
             'matriculebac': str(random.randint(30000000, 39999999)),
             'dobac' : "استظهار+النتيجة"
         }
+        if data['matriculebac'] in tabo:
+            continue
+        tabo.append(data['matriculebac'])
         try:
             r = requests.post(url, data=data).text
         except Exception:
