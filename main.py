@@ -22,7 +22,6 @@ done = False
 def run(thread_name):
     global done
     while not done:
-        i += 1
         data = {
             'matriculebac': str(random.randint(00000000, 49999999)),
             'dobac' : "استظهار+النتيجة"
