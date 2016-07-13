@@ -9,7 +9,6 @@ import re
 
 url = 'http://bac.onec.dz/index.php'
 
-p = re.compile('.*?alert.*?ألف مبروك.*?الشعبة :(.*)?اللقب :(.*)?الاسم :(.*)?مكان.*?المعدل :(.*)?الملاحظة.*?\".*', re.DOTALL)
 p_fname = re.compile('.*?الاسم : (.*)?مكان.*', re.DOTALL)
 p_lname = re.compile('.*?اللقب : (.*)?الاسم.*', re.DOTALL)
 p_birth_date = re.compile('.*?تاريخ الميلاد : (\d\d-\d\d-\d\d\d\d).*?(ألف|راسب).*', re.DOTALL)
@@ -17,12 +16,10 @@ p_birth_place = re.compile('.*?مكان الميلاد : (.*)?تاريخ.*', re.
 p_field = re.compile('.*?الشعبة : (.*)?اللقب.*', re.DOTALL)
 p_grade = re.compile('.*?المعدل : (.*)?الملاحظة.*', re.DOTALL)
 
-i = 0
 done = False
 
 
 def run(thread_name):
-    global i
     global done
     while not done:
         i += 1
