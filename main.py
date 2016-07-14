@@ -1,7 +1,6 @@
 #!/bin/python
 
 import requests
-import random
 import time
 import threading
 import re
@@ -10,26 +9,25 @@ import sqlite3
 
 url = 'http://bac.onec.dz/index.php'
 
-
-
 p_fname = re.compile('.*?الاسم : (.*)?مكان.*', re.DOTALL)
 p_lname = re.compile('.*?اللقب : (.*)?الاسم.*', re.DOTALL)
 p_birth_date = re.compile('.*?تاريخ الميلاد : (\d\d-\d\d-\d\d\d\d).*?(ألف|راسب).*', re.DOTALL)
 p_birth_place = re.compile('.*?مكان الميلاد : (.*)?تاريخ.*', re.DOTALL)
 p_field = re.compile('.*?الشعبة : (.*)?اللقب.*', re.DOTALL)
 p_grade = re.compile('.*?المعدل : (.*)?الملاحظة.*', re.DOTALL)
+# To start from this id in order
+mat = 31116933
 
-mat = 31004000
 
-def run(thread_name):
+def run():
     global mat
     db = sqlite3.connect('data.db')
-    db.execute("PRAGMA busy_timeout = 300000")
-    while mat <= 31005000:
+    db.execute("PRAGMA busy_timeout = 300000") # To avoid db locked exception
+    while mat <= 39050000:
         m = mat
         mat += 1
         data = {
-            'matriculebac': str(mat),
+            'matriculebac': str(m),
             'dobac' : "استظهار+النتيجة"
         }
         try:
@@ -52,7 +50,8 @@ def run(thread_name):
                             m_birth_date.group(1).replace('\\n', ''),
                             m_birth_place.group(1).replace('\\n', ''),
                             m_field.group(1).replace('\\n', ''),
-                            m_grade.group(1).replace('\\n', '')))
+                            m_grade.group(1).replace('\\n', '')
+                            ))
                 db.commit()
                 print('{}, {},{},{},{}, {}, {}'.format(data['matriculebac'],
                                                        m_fname.group(1).replace('\\n', ''),
@@ -67,11 +66,11 @@ def run(thread_name):
             except Exception as e:
                 pass
                 # print(str(e))
-                # print('{} exists'.format(data['matriculebac']))
+                print('{} exists'.format(data['matriculebac']))
 
 
 if __name__ == '__main__':
-    threads = [threading.Thread(target=run, args=(i, )) for i in range(100)]
+    threads = [threading.Thread(target=run) for i in range(5)]
 
     for thread in threads:
         thread.start()
