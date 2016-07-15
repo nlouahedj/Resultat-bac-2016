@@ -5,15 +5,15 @@ import re
 import sqlite3
 import threading
 import time
+from math import ceil, sqrt
 
 import requests
 
 
 URL = 'http://bac.onec.dz/index.php'
 id_go = 39064553  # start from this id in order
-# id_end = 39064583  # last id to fetch in order
-id_count = 6  # how many id to get
-threads_count = 2  # how many threads to use
+# id_end = 39069999  # last id to fetch in order
+id_count = 100  # how many id to get
 lock = threading.RLock()  # mutex
 
 p_fname = re.compile('.*?الاسم : (.*)?مكان.*', re.DOTALL)
@@ -45,9 +45,7 @@ def run(n):
     data = {'matriculebac': str(id_current), 'dobac': "استظهار+النتيجة"}
 
     try:
-      res = requests.post(URL, data=data)
-      r = res.text
-      print(res.status_code)
+      r = requests.post(URL, data=data).text
     except Exception:
       time.sleep(2)
       print('Couldnt fetch {}'.format(id_current))
@@ -96,15 +94,20 @@ def run(n):
 
 if __name__ == '__main__':
   # number of total IDs to fetch
-  ids_per_thr = id_end - id_go \
+  id_total = id_end - id_go \
     if (('id_end' in globals()) and (id_end > id_go)) \
     else id_count
-  print('Total IDs to fetch: {}'.format(ids_per_thr))
+
+  # scale number of threads according to requests number
+  threads_count = ceil(sqrt(id_total))
+
+  print('Total IDs to fetch: {}, using {} threads'
+        .format(id_total, threads_count))
 
   thrds = [threading.Thread(
     target=run,
     # all threads get the same amount of requests to make
-    args=(int(ids_per_thr / threads_count),)) for i in range(threads_count)]
+    args=(int(id_total / threads_count),)) for i in range(threads_count)]
 
   for thread in thrds:
     thread.start()
