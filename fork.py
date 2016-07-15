@@ -96,7 +96,9 @@ def run(n):
 
 if __name__ == '__main__':
   # number of total IDs to fetch
-  ids_per_thr = id_end - id_go if (('id_end' in globals()) and (id_end > id_go)) else id_count
+  ids_per_thr = id_end - id_go \
+    if (('id_end' in globals()) and (id_end > id_go)) \
+    else id_count
   print('Total IDs to fetch: {}'.format(ids_per_thr))
 
   thrds = [threading.Thread(
